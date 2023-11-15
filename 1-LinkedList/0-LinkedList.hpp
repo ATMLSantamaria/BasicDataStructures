@@ -14,6 +14,7 @@ struct Node {
     value_=value;
  }
  Node(){}
+ ~Node(){}
 
  Content value_;
 
@@ -42,7 +43,7 @@ class SinglyLinkedList {
 
   }
 
-  SinglyLinkedList(int64_t len):len_(len) {
+  SinglyLinkedList(uint64_t len):len_(len) {
 
     head_ = new Node<Content>();
     head_->prev_ = nullptr;
@@ -75,6 +76,22 @@ class SinglyLinkedList {
     tail_->prev_ =  last_created_node_;
     last_created_node_->next_ = tail_;
     
+  }
+
+  ~SinglyLinkedList(){
+   Node<Content> * current_node_=head_;
+   
+   for (uint64_t i = 0; i < len_;++i) {
+
+    Node<Content> * auxiliary_pointer_;
+    auxiliary_pointer_=current_node_->next_;
+
+    delete current_node_;
+
+    current_node_ = auxiliary_pointer_;
+   }
+
+
   }
 
   Node<Content> * GetHead() {
@@ -211,6 +228,8 @@ class SinglyLinkedList {
    if (current_node_ == target_to_search)
     return counter;
 
+   return -1;
+
   }  
 
   //Content class need to have onverload operator<<
@@ -249,8 +268,12 @@ class SinglyLinkedList {
 
     }
 
+    
+
     //This depence of the ownership. But in principle I assume that the ownership of the node belongs to the LinkedList so it is deleted here
     delete target_node;
+    
+    --len_;
   }
 
   void EraseAtIndex(uint64_t target_index) {
